@@ -1,9 +1,7 @@
 #![allow(non_snake_case)]
 #![allow(unused)]
 use dioxus_fullstack::prelude::*;
-
 use dioxus_router::prelude::*;
-
 use dioxus::prelude::*;
 use log::LevelFilter;
 
@@ -13,10 +11,11 @@ fn main() {
 
     let config = LaunchBuilder::<FullstackRouterConfig<Route>>::router();
     #[cfg(feature = "ssr")]
-    let config = config.incremental(
+    let config = config
+    .addr(std::net::SocketAddr::from(([0,0,0,0], 9090)))
+    .incremental(
         IncrementalRendererConfig::default().invalidate_after(std::time::Duration::from_secs(120)),
     );
-
     config.launch();
 }
 
@@ -68,7 +67,6 @@ fn Home(cx: Scope) -> Element {
                 "Run server function!"
             }
             "Server said: {text}"
-
         }
     })
 }
@@ -76,7 +74,6 @@ fn Home(cx: Scope) -> Element {
 #[server(PostServerData)]
 async fn post_server_data(data: String) -> Result<(), ServerFnError> {
     println!("Server received: {}", data);
-
     Ok(())
 }
 
